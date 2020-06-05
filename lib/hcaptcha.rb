@@ -14,7 +14,7 @@ end
 
 module Hcaptcha
   DEFAULT_TIMEOUT = 3
-  RESPONSE_LIMIT = 4000
+  RESPONSE_LIMIT = 32767
 
   class HcaptchaError < StandardError
   end

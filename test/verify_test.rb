@@ -167,17 +167,18 @@ describe 'controller helpers' do
 
     it "does not verify via http call when user did not click anything" do
       @controller.params = { 'h-captcha-response' => ""}
-      assert_not_requested :get, %r{\.google\.com}
+      assert_not_requested :get, %r{\.hcaptcha\.com}
       assert_equal false, @controller.verify_hcaptcha
       assert_equal "hCaptcha verification failed, please try again.", @controller.flash[:hcaptcha_error]
     end
 
-    it "does not verify via http call when response length exceeds G_RESPONSE_LIMIT" do
+    it "does not verify via http call when response length exceeds RESPONSE_LIMIT" do
       # this returns a 400 or 413 instead of a 200 response with error code
-      # typical response length is less than 400 characters
-      str = "a" * 4001
+      # typical response length seems to be around 4000 characters, can be slightly above that though.
+      # This fork bumps the limit to 32767 characters.  Should be more than enough.
+      str = "a" * 32768
       @controller.params = { 'h-captcha-response' => "#{str}"}
-      assert_not_requested :get, %r{\.google\.com}
+      assert_not_requested :get, %r{\.hcaptcha\.com}
       assert_equal false, @controller.verify_hcaptcha
       assert_equal "hCaptcha verification failed, please try again.", @controller.flash[:hcaptcha_error]
     end
